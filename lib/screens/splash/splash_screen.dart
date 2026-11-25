@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 // Importation de l'écran de connexion.
@@ -16,23 +17,23 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  Timer? _timer;
   // ----------------------------------------------------------
   // NAVIGATION VERS L'ÉCRAN DE CONNEXION
   // ----------------------------------------------------------
 
-  /// Attend deux secondes puis ouvre l'écran de connexion.
-  Future<void> _allerVersLogin() async {
-    // Attend deux secondes pour afficher le Splash Screen.
-    await Future.delayed(const Duration(seconds: 2));
+  void _allerVersLogin() {
+    // Lance un minuteur de deux secondes.
+    _timer = Timer(const Duration(seconds: 2), () {
+      // Vérifie que l'écran existe toujours.
+      if (!mounted) return;
 
-    // Vérifie que l'écran existe toujours.
-    if (!mounted) return;
-
-    // Remplace le Splash Screen par l'écran de connexion.
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-    );
+      // Remplace le Splash Screen par l'écran de connexion.
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    });
   }
 
   // ----------------------------------------------------------
@@ -48,6 +49,13 @@ class _SplashScreenState extends State<SplashScreen> {
     _allerVersLogin();
   }
 
+  @override
+  void dispose() {
+    // Annule le minuteur lorsque l'écran est détruit.
+    _timer?.cancel();
+
+    super.dispose();
+  }
   // ----------------------------------------------------------
   // CONSTRUCTION DE L'INTERFACE
   // ----------------------------------------------------------
